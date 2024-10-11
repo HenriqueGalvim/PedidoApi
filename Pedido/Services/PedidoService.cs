@@ -55,14 +55,23 @@ public class PedidoService : ControllerBase
 	}
 
 
-	public ReadPedidoDto ListarPedidoPorId(int id)
+	public async Task<ActionResult> ListarPedidoPorId(int id)
 	{
-		var produto = _context.Pedido.FirstOrDefault(produto => produto.Id == id);
+		string resultado = await _itemServiceHttpClient.BuscaTodosProdutoNoEstoque();
+		var deserializandoJson = JsonSerializer.Deserialize<List<ReadProdutoDto>>(resultado);
 
-		if (produto == null) return null;
+		var pedido = _context.Pedido.FirstOrDefault(pedido => pedido.Id == id);
 
-		var produtoDto = _mapper.Map<ReadPedidoDto>(produto);
-		return produtoDto;
+		if (pedido == null) return null;
+
+		var pedidoDto = _mapper.Map<ReadPedidoDto>(pedido);
+
+		foreach (var itemPedido in pedidoDto.ItemPedidos)
+		{
+			itemPedido.Produto = deserializandoJson.FirstOrDefault(produto => produto.Id == itemPedido.IdProduto);
+		}
+
+		return Ok(pedidoDto);
 	}
 
 	public Models.Pedido AtualizarPedido(int id, UpdatePedidoDto updatePedidoDto)

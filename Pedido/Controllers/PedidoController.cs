@@ -38,9 +38,9 @@ public class PedidoController : ControllerBase
 	}
 
 	[HttpGet("{id}")]
-	public ActionResult ListarPedidoPorId(int id)
+	public async Task<ActionResult> ListarPedidoPorId(int id)
 	{
-		return Ok(_pedidoService.ListarPedidoPorId(id));
+		return await _pedidoService.ListarPedidoPorId(id);
 	}
 
 	[HttpPut("{id}")]
