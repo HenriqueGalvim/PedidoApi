@@ -9,4 +9,6 @@ public class CreateItemPedidoDto
 
 	public int PedidoId { get; set; }
 
+	public int quantidade { get; set; }
+
 }

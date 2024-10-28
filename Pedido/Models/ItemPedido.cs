@@ -14,6 +14,9 @@ public class ItemPedido
 	public int PedidoId { get; set; }
 
 	[Required]
+	public int quantidade { get; set; }
+
+	[Required]
 	public int IdProduto { get; set; }
 
 }

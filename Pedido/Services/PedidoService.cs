@@ -47,7 +47,7 @@ public class PedidoService : ControllerBase
 		{
 			foreach (var itemPedido in pedido.ItemPedidos)
 			{
-				 itemPedido.Produto = deserializandoJson.FirstOrDefault(produto => produto.Id == itemPedido.IdProduto);
+				itemPedido.Produto = deserializandoJson.FirstOrDefault(produto => produto.Id == itemPedido.IdProduto);
 			}
 		}
 
@@ -55,9 +55,10 @@ public class PedidoService : ControllerBase
 	}
 
 
-	public async Task<ActionResult> ListarPedidoPorId(int id)
+	public async Task<ReadPedidoDto> ListarPedidoPorId(int id)
 	{
 		string resultado = await _itemServiceHttpClient.BuscaTodosProdutoNoEstoque();
+		System.Console.WriteLine(resultado);
 		var deserializandoJson = JsonSerializer.Deserialize<List<ReadProdutoDto>>(resultado);
 
 		var pedido = _context.Pedido.FirstOrDefault(pedido => pedido.Id == id);
@@ -71,7 +72,39 @@ public class PedidoService : ControllerBase
 			itemPedido.Produto = deserializandoJson.FirstOrDefault(produto => produto.Id == itemPedido.IdProduto);
 		}
 
-		return Ok(pedidoDto);
+		return pedidoDto;
+	}
+
+	public async Task<ActionResult> FinalizarPedido(ReadPedidoDto readPedidoDto)
+	{
+		string resultado = await _itemServiceHttpClient.BuscaTodosProdutoNoEstoque();
+		var deserializandoJson = JsonSerializer.Deserialize<List<ReadProdutoDto>>(resultado);
+
+		foreach (var itemPedido in readPedidoDto.ItemPedidos)
+		{
+			itemPedido.Produto = deserializandoJson.FirstOrDefault(produto => produto.Id == itemPedido.IdProduto);
+		}
+		if (readPedidoDto.Finalizado is false)
+		{
+			foreach (var itemPedido in readPedidoDto.ItemPedidos)
+			{
+				var verificaItemQuantidade = await _itemServiceHttpClient.VerificaQuantidadeItemNoEstoque(itemPedido.IdProduto, itemPedido.quantidade);
+				if (verificaItemQuantidade == true)
+				{
+					System.Console.WriteLine("Quantidade ok");
+					System.Console.WriteLine(itemPedido.Produto.Nome);
+					System.Console.WriteLine("---------------------\n");
+				}
+				else
+				{
+					System.Console.WriteLine("Não tem quantidade suficiente no estoque");
+					System.Console.WriteLine(itemPedido.Produto.Nome);
+					System.Console.WriteLine("---------------------\n");
+				}
+			}
+		}
+
+		return Ok(readPedidoDto);
 	}
 
 	public Models.Pedido AtualizarPedido(int id, UpdatePedidoDto updatePedidoDto)

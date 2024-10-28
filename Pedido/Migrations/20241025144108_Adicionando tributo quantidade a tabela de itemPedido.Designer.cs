@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Pedido.Data;
@@ -11,9 +12,11 @@ using Pedido.Data;
 namespace Pedido.Migrations
 {
     [DbContext(typeof(PedidoDbContext))]
-    partial class PedidoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241025144108_Adicionando tributo quantidade a tabela de itemPedido")]
+    partial class AdicionandotributoquantidadeatabeladeitemPedido
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

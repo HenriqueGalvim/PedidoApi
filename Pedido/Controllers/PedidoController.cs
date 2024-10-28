@@ -40,7 +40,7 @@ public class PedidoController : ControllerBase
 	[HttpGet("{id}")]
 	public async Task<ActionResult> ListarPedidoPorId(int id)
 	{
-		return await _pedidoService.ListarPedidoPorId(id);
+		return Ok(await _pedidoService.ListarPedidoPorId(id));
 	}
 
 	[HttpPut("{id}")]
@@ -66,9 +66,10 @@ public class PedidoController : ControllerBase
 	}
 
 	[HttpPost("finalizar")]
-	public async Task<ActionResult> finalizarPedido([FromBody] int id)
+	public async Task<ActionResult> FinalizarPedido([FromBody] int id)
 	{
-		var pedido = _pedidoService.ListarPedidoPorId(id);
+		var pedido = await _pedidoService.ListarPedidoPorId(id);
+        var finalizar = _pedidoService.FinalizarPedido(pedido);
 
 		return Ok(pedido);
 	}

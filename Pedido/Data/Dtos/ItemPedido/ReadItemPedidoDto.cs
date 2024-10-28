@@ -11,5 +11,7 @@ public class ReadItemPedidoDto
 
 	public int PedidoId { get; set; }
 
+	public int quantidade { get; set; }
+
 	public ReadProdutoDto? Produto { get; set; } = null;
 }
